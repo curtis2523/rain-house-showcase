@@ -1,6 +1,6 @@
 # Rain House
 
-[![Rain House on iPhone with Daily Lyrics, a head-to-head song matchup, and the concert archive](assets/product/rain-house.webp)](assets/product/rain-house.webp)
+[![Rain House Today home screens in the native iOS app and the desktop Web app](assets/product/rain-house.webp)](assets/product/rain-house.webp?raw=1)
 
 I designed and built Rain House for iOS and the Web. [Open Rain House on the Web](https://rainhouse.top)
 
