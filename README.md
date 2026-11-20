@@ -20,6 +20,16 @@ Rain House is a music and concert companion I built for iOS and the Web. It brin
 
 The Content Studio screens and demo use fictional catalog records.
 
+### Mobile UI Boards
+
+| App overview | Today, favorites, and sharing | Song comparisons and rankings |
+| --- | --- | --- |
+| [![Display, widget, and layout preferences](assets/mobile/overview.webp)](assets/mobile/overview.webp) | [![Daily view, favorite sorting, and share-card settings](assets/mobile/today-and-favorites.webp)](assets/mobile/today-and-favorites.webp) | [![Pairwise comparison and ranking views](assets/mobile/song-ranking.webp)](assets/mobile/song-ranking.webp) |
+| **Concert diary** | **WidgetKit countdowns** | **Attendance dashboard** |
+| [![Concert diary tabs, filters, and list and grid controls](assets/mobile/concert-diary.webp)](assets/mobile/concert-diary.webp) | [![Small and medium concert countdown widgets](assets/mobile/widgets.webp)](assets/mobile/widgets.webp) | [![Attendance summaries and listening report navigation](assets/mobile/attendance-dashboard.webp)](assets/mobile/attendance-dashboard.webp) |
+
+Select a board to view it at full size. These excerpts omit album artwork, lyric text, and personal records.
+
 ## Implementation
 
 - **iOS.** I built the app in Swift and SwiftUI, with a shared Swift package for the catalog, persistence, and Elo ranking logic. WidgetKit uses the shared data for daily lyrics and concert countdowns.
