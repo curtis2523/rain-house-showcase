@@ -1,127 +1,42 @@
 # Rain House
 
-![Rain House showcase with the iOS concert editor and Web dashboard](assets/cover.webp)
+[![Rain House Today home screens in the native iOS app and the desktop Web app](assets/product/rain-house.webp)](assets/product/rain-house.webp?raw=1)
 
-Rain House is a music and concert companion I built for iOS and the Web. It brings together daily lyric selections, favorites, pairwise song rankings, concert setlists, and an attendance diary. I also built a local Content Studio to maintain the catalog.
+I designed and built Rain House for iOS and the Web. [Open Rain House on the Web](https://rainhouse.top)
 
-[Open Rain House on the Web](https://rainhouse.top)
+## iOS product design
 
-## Screenshots & Demo
+<p align="center">
+  <a href="assets/product/daily-lyrics.webp?raw=1"><img src="assets/product/daily-lyrics.webp" width="370" alt="Daily Lyrics with the Today view and an exported lyric card"></a>&emsp;<a href="assets/product/song-rankings.webp?raw=1"><img src="assets/product/song-rankings.webp" width="370" alt="Song Rankings with a pairwise matchup and the exported Top 10"></a>
+</p>
+<p align="center">
+  <a href="assets/product/concert-diary.webp?raw=1"><img src="assets/product/concert-diary.webp" width="370" alt="Concert Diary with the tour archive and the setlist for an individual show"></a>&emsp;<a href="assets/product/widgets.webp?raw=1"><img src="assets/product/widgets.webp" width="370" alt="WidgetKit views for a daily lyric and the countdown to the next show"></a>
+</p>
 
-| iOS concert editor | Web backup and preferences |
-| --- | --- |
-| <img src="assets/ios-concert-editor.webp" alt="Native iOS form for adding a concert" width="240"> | <img src="assets/web-mobile-backup.webp" alt="Mobile Web settings with backup export and restore" width="240"> |
-
-[Desktop attendance dashboard](assets/web-desktop-dashboard.webp) · [Setlist editor and history demo (MP4)](assets/catalog-workflow.mp4)
-
-| Content Studio setlist editor | Edit history and restore |
-| --- | --- |
-| ![Setlist chapters and links to tracks in the actual Content Studio](assets/studio-setlist-editor.webp) | ![Content Studio history with save, delete, and restore entries](assets/studio-history.webp) |
-
-The Content Studio screens and demo use fictional catalog records.
-
-### Mobile UI Boards
-
-| App overview | Today, favorites, and sharing | Song comparisons and rankings |
-| --- | --- | --- |
-| [![Display, widget, and layout preferences](assets/mobile/overview.png)](assets/mobile/overview.png) | [![Daily view, favorite sorting, and share-card settings](assets/mobile/today-and-favorites.png)](assets/mobile/today-and-favorites.png) | [![Pairwise comparison and ranking views](assets/mobile/song-ranking.png)](assets/mobile/song-ranking.png) |
-| **Concert diary** | **WidgetKit countdowns** | **Attendance dashboard** |
-| [![Concert diary tabs, filters, and list and grid controls](assets/mobile/concert-diary.png)](assets/mobile/concert-diary.png) | [![Small and medium concert countdown widgets](assets/mobile/widgets.png)](assets/mobile/widgets.png) | [![Attendance summaries and listening report navigation](assets/mobile/attendance-dashboard.png)](assets/mobile/attendance-dashboard.png) |
-
-Select a board to open the full-size original.
+Select a board to view it at full resolution.
 
 ## Implementation
 
-- **iOS.** I built the app in Swift and SwiftUI, with a shared Swift package for the catalog, persistence, and Elo ranking logic. WidgetKit uses the shared data for daily lyrics and concert countdowns.
-- **Web.** I built a responsive H5 app with TypeScript, React, and Taro. The layout adapts from mobile navigation to a desktop layout. Browser file and storage adapters handle imports, exports, and persistence.
-- **Deployment.** I shipped the Web build on Cloudflare Pages and migrated the production site to EdgeOne Pages. The static build uses hash routing and content-hashed assets that can be cached independently of the HTML entry point.
+- **iOS** — Swift and SwiftUI for the app, with a shared Swift package for the catalog, local persistence, and Elo ratings. WidgetKit reads daily lyrics and concert countdowns from shared App Group data.
+- **Web** — TypeScript, React, and Taro for a responsive H5 app with browser storage and file adapters. I deployed the build on Cloudflare Pages and migrated the production site to EdgeOne Pages. [Desktop dashboard](assets/web-desktop-dashboard.webp)
+- **Content Studio** — A local Python tool for searching and editing releases, songs, concerts, and ordered setlists. It validates catalog references and keeps a journal for restoring prior revisions. [Setlist editing demo](assets/catalog-workflow.mp4)
 
 ## Database Design & Data Management
 
-### Storage and data flow
+The clients start with a bundled JSON catalog. On iOS, the app writes personal state as JSON and shares a snapshot with the widgets through an App Group. The Web app stores a versioned personal document in IndexedDB. JSON backup export and restore support manual transfer of compatible iOS data to the Web.
 
-```mermaid
-flowchart TB
-    Studio["Local Content Studio / Python"] --> Catalog["Canonical JSON catalog"]
-    Catalog --> Bundles["Bundled iOS and Web catalog data"]
-    Catalog -. "versioned publishing" .-> COS["Tencent Cloud COS object storage"]
-    Bundles --> iOS["SwiftUI app"]
-    Bundles --> Web["Taro Web app"]
-    COS -. "when configured" .-> iOS
-    COS -. "when configured" .-> Web
-    iOS --> AppGroup["App Group JSON and shared snapshot"]
-    AppGroup --> Widget["WidgetKit"]
-    Web --> IndexedDB["IndexedDB personal state"]
-    Web -. "account preview" .-> Auth["CloudBase Auth"]
-    Web -. "account preview" .-> Avatars["CloudBase PG Storage"]
-```
+<img src="assets/product/data-architecture.webp" width="420" alt="Rain House data flow from Python Content Studio through the JSON catalog to SwiftUI and Taro. The iOS App Group shares data with WidgetKit and the Web app uses IndexedDB.">
 
-| Store | What it holds |
-| --- | --- |
-| **Editorial JSON** | Releases, tracks, lyric records, concerts, and ordered setlists. The studio writes the canonical files and refreshes local Web build inputs. |
-| **iOS App Group and optional iCloud Drive** | Favorites, ratings, and concert records use atomic JSON writes. Preferences use UserDefaults. The app mirrors state to the App Group for WidgetKit when iCloud Drive is selected in a supported build. |
-| **Web IndexedDB** | A versioned personal document holds state and preferences per browser origin. The Web app can import its own JSON backups and supported iOS backup exports. |
-| **Tencent Cloud COS** | The catalog publisher writes immutable JSON snapshots and content-addressed images. It verifies uploaded objects before switching the active version pointer. Configured clients verify hashes before using a new snapshot and retain bundled or cached content on failure. |
-| **CloudBase account preview** | CloudBase Auth handles sign-in. PostgreSQL-backed private Storage holds avatars with owner-scoped access. |
+<details>
+<summary>Catalog model, storage options, and backup</summary>
 
-The live Web deployment uses its bundled catalog. CloudBase account integration was exercised in a separate development environment.
+- **Music catalog** — An album contains songs. Lyric records refer to a song by `catalogSongID`, and excerpts link by `songID` with a `dailyEligible` flag for selection.
+- **Concert catalog** — A setlist links to a concert by `concertID` and contains ordered sections. Each entry can reference a song or use a manual title. In a fictional example, `demo-show-1` links to a setlist whose Opening section references `demo-track-1`, “Paper Lanterns.”
+- **Personal state** — Favorites reference excerpt IDs, ratings are keyed by song ID, and concert memories are keyed by event ID. Supported iOS builds can store a JSON document in iCloud Drive and mirror a snapshot to the App Group.
+- **Publishing and accounts** — The catalog publisher supports versioned snapshots on Tencent Cloud COS with hash verification and rollback. The live Web deployment serves its bundled catalog. I used CloudBase Auth and PostgreSQL-backed Storage for avatars in a separate account preview.
 
-### Catalog and personal data model
+[Web backup controls](assets/web-mobile-backup.webp) · [Studio setlist editor](assets/studio-setlist-editor.webp) · [Studio history and restore](assets/studio-history.webp)
 
-These are JSON documents and ID references. The diagram shows the main links between records.
+</details>
 
-```mermaid
-flowchart LR
-    Album["Album"] -->|"songs[]"| Song["Song"]
-    Lyric["LyricRecord"] -->|"catalogSongID"| Song
-    Excerpt["LyricExcerpt"] -->|"songID"| Song
-    Concert["ConcertEvent"] -->|"concert ID"| Setlist["Setlist"]
-    Setlist -->|"sections[]"| Section["SetlistSection"]
-    Section -->|"entries[]"| Entry["SetlistEntry"]
-    Entry -. "optional songID" .-> Song
-    Personal["PersonalState"] -->|"favoriteExcerptIDs"| Excerpt
-    Personal -->|"ratings keyed by song ID"| Song
-    Personal -->|"concertMemories keyed by event ID"| Concert
-```
-
-| Record | Selected fields |
-| --- | --- |
-| Album / Song | Album `id`, `title`, `releaseDate`, `kind`, and `songs`. Song `id`, `albumID`, `title`, and `trackNumber`. |
-| LyricRecord / LyricExcerpt | A lyric record uses `catalogSongID` to link to a track. An excerpt has its own `id`, `songID`, and `dailyEligible` flag. |
-| ConcertEvent / Setlist | A concert has `id`, `title`, `city`, `venue`, and `startsAt`. A setlist refers to `concertID` and contains ordered sections. An entry can link to a song or use a manual title. |
-| PersonalState | `favoriteExcerptIDs`, `favoriteExcerptDates`, per-song `ratings`, and `concertMemories`. The backup wraps these records with a version and preferences. |
-
-These two fictional records show the concert-to-setlist link.
-
-```json
-{
-  "concert": {
-    "id": "10000000-0000-4000-8000-000000000001",
-    "title": "Harbor Lights Tour · Night One",
-    "city": "Demo City",
-    "venue": "Harbor Hall",
-    "startsAt": "2027-06-11T19:30:00Z"
-  },
-  "setlist": {
-    "concertID": "10000000-0000-4000-8000-000000000001",
-    "sections": [
-      {
-        "id": "opening",
-        "title": "Opening",
-        "songIDs": ["demo-track-1"],
-        "entries": [
-          { "id": "entry-demo-1", "title": "Paper Lanterns", "songID": "demo-track-1" }
-        ]
-      }
-    ]
-  }
-}
-```
-
-### Data management
-
-I built search and filters and added create, edit, and delete workflows for catalog records. The studio checks referenced IDs and rejects saves from stale revisions. Each save journals affected files, with history restore for prior states. Catalog publishing has its own rollback by version.
-
-In the clients, I implemented favorite and attendance toggles, personal concert editing on iOS, and JSON backup export and restore. Catalog revisions can update independently of personal state. Moving supported personal data from iOS to Web is a manual backup import.
-
-This showcase contains documentation and media. The Rain House application and Content Studio source are private.
+The Rain House app and Content Studio source code are private.
