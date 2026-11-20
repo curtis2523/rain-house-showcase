@@ -24,11 +24,11 @@ The Content Studio screens and demo use fictional catalog records.
 
 | App overview | Today, favorites, and sharing | Song comparisons and rankings |
 | --- | --- | --- |
-| [![Display, widget, and layout preferences](assets/mobile/overview.webp)](assets/mobile/overview.webp) | [![Daily view, favorite sorting, and share-card settings](assets/mobile/today-and-favorites.webp)](assets/mobile/today-and-favorites.webp) | [![Pairwise comparison and ranking views](assets/mobile/song-ranking.webp)](assets/mobile/song-ranking.webp) |
+| [![Display, widget, and layout preferences](assets/mobile/overview.png)](assets/mobile/overview.png) | [![Daily view, favorite sorting, and share-card settings](assets/mobile/today-and-favorites.png)](assets/mobile/today-and-favorites.png) | [![Pairwise comparison and ranking views](assets/mobile/song-ranking.png)](assets/mobile/song-ranking.png) |
 | **Concert diary** | **WidgetKit countdowns** | **Attendance dashboard** |
-| [![Concert diary tabs, filters, and list and grid controls](assets/mobile/concert-diary.webp)](assets/mobile/concert-diary.webp) | [![Small and medium concert countdown widgets](assets/mobile/widgets.webp)](assets/mobile/widgets.webp) | [![Attendance summaries and listening report navigation](assets/mobile/attendance-dashboard.webp)](assets/mobile/attendance-dashboard.webp) |
+| [![Concert diary tabs, filters, and list and grid controls](assets/mobile/concert-diary.png)](assets/mobile/concert-diary.png) | [![Small and medium concert countdown widgets](assets/mobile/widgets.png)](assets/mobile/widgets.png) | [![Attendance summaries and listening report navigation](assets/mobile/attendance-dashboard.png)](assets/mobile/attendance-dashboard.png) |
 
-Select a board to view it at full size. These excerpts omit album artwork, lyric text, and personal records.
+Select a board to open the full-size original.
 
 ## Implementation
 
