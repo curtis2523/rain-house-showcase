@@ -25,15 +25,7 @@ Select a board to view it at full resolution.
 
 The clients start with a bundled JSON catalog. On iOS, the app writes personal state as JSON and shares a snapshot with the widgets through an App Group. The Web app stores a versioned personal document in IndexedDB. JSON backup export and restore support manual transfer of compatible iOS data to the Web.
 
-```mermaid
-flowchart TB
-    Studio["Python Content Studio"] --> Catalog["Versioned JSON catalog"]
-    Catalog --> iOS["SwiftUI app"]
-    Catalog --> Web["Taro Web app"]
-    iOS --> Local["App Group JSON"]
-    Local --> Widgets["WidgetKit"]
-    Web --> Browser["IndexedDB"]
-```
+<img src="assets/product/data-architecture.webp" width="420" alt="Rain House data flow from Python Content Studio through the JSON catalog to SwiftUI and Taro. The iOS App Group shares data with WidgetKit and the Web app uses IndexedDB.">
 
 <details>
 <summary>Catalog model, storage options, and backup</summary>
