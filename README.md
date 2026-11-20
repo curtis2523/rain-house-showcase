@@ -1,21 +1,19 @@
 # Rain House
 
-I built Rain House to save lyrics, rank favorite songs, and keep a diary of live shows. The native iOS app includes Home Screen and Lock Screen widgets, and the Web app adapts to mobile and desktop browsers.
-
-[Open Rain House on the Web](https://rainhouse.top)
-
 [![Rain House on iPhone with Daily Lyrics, a head-to-head song matchup, and the concert archive](assets/product/rain-house.webp)](assets/product/rain-house.webp)
+
+I designed and built Rain House for iOS and the Web. [Open Rain House on the Web](https://rainhouse.top)
 
 ## iOS product design
 
 <p align="center">
-  <a href="assets/product/daily-lyrics.webp"><img src="assets/product/daily-lyrics.webp" width="360" alt="Daily Lyrics with the Today view and an exported lyric card"></a>
-  <a href="assets/product/song-rankings.webp"><img src="assets/product/song-rankings.webp" width="360" alt="Song Rankings with a pairwise matchup and the exported Top 10"></a>
+  <a href="assets/product/daily-lyrics.webp?raw=1"><img src="assets/product/daily-lyrics.webp" width="370" alt="Daily Lyrics with the Today view and an exported lyric card"></a>&emsp;<a href="assets/product/song-rankings.webp?raw=1"><img src="assets/product/song-rankings.webp" width="370" alt="Song Rankings with a pairwise matchup and the exported Top 10"></a>
 </p>
 <p align="center">
-  <a href="assets/product/concert-diary.webp"><img src="assets/product/concert-diary.webp" width="360" alt="Concert Diary with the tour archive and the setlist for an individual show"></a>
-  <a href="assets/product/widgets.webp"><img src="assets/product/widgets.webp" width="360" alt="WidgetKit views for a daily lyric and the countdown to the next show"></a>
+  <a href="assets/product/concert-diary.webp?raw=1"><img src="assets/product/concert-diary.webp" width="370" alt="Concert Diary with the tour archive and the setlist for an individual show"></a>&emsp;<a href="assets/product/widgets.webp?raw=1"><img src="assets/product/widgets.webp" width="370" alt="WidgetKit views for a daily lyric and the countdown to the next show"></a>
 </p>
+
+Select a board to view it at full resolution.
 
 ## Implementation
 
